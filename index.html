@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1d1714" />
+  <title>Ресурсная карта дня</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="app">
+    <section class="hero" id="startScreen">
+      <div class="eyebrow">Метафорическая колода</div>
+      <h1>Ресурсная карта дня</h1>
+      <p>Сделай вдох, задай внутренний вопрос и нажми на кнопку. На сегодня выпадет одна карта из тестовой колоды.</p>
+      <button class="primary-btn" id="drawDailyCard">Карта дня</button>
+      <button class="secondary-btn" id="drawRandomCard">Вытянуть случайную карту</button>
+      <p class="small-note">Тестовая версия: 7 карт, 10 вопросов, одно послание к каждой карте.</p>
+    </section>
+
+    <section class="card-screen hidden" id="cardScreen" aria-live="polite">
+      <div class="top-row">
+        <button class="ghost-btn" id="backToStart">← Назад</button>
+        <div class="tag" id="cardCategory"></div>
+      </div>
+
+      <article class="card-result">
+        <div class="card-image-wrap">
+          <img id="cardImage" class="card-image" alt="" />
+        </div>
+        <div class="card-text">
+          <div class="card-number" id="cardNumber"></div>
+          <h2 id="cardTitle"></h2>
+          <p id="cardDescription"></p>
+        </div>
+      </article>
+
+      <div class="actions">
+        <button class="primary-btn" id="showMessage">Получить послание</button>
+        <button class="secondary-btn" id="showQuestion">Получить вопрос</button>
+      </div>
+
+      <section class="reveal-box hidden" id="revealBox">
+        <div class="reveal-label" id="revealLabel"></div>
+        <p id="revealText"></p>
+      </section>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
