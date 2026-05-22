@@ -7,6 +7,7 @@ if (tg) {
 
 const startScreen = document.getElementById("startScreen");
 const cardScreen = document.getElementById("cardScreen");
+
 const drawRandomCardButton = document.getElementById("drawRandomCard");
 const drawRandomCardBottomButton = document.getElementById("drawRandomCardBottom");
 const backToStartButton = document.getElementById("backToStart");
@@ -20,34 +21,58 @@ const revealBox = document.getElementById("revealBox");
 const revealLabel = document.getElementById("revealLabel");
 const revealText = document.getElementById("revealText");
 
+// Эти элементы были в первой версии интерфейса. Оставляем поддержку, чтобы приложение не ломалось,
+// если GitHub или Telegram временно подтянули старый index.html.
+const legacyCardCategory = document.getElementById("cardCategory");
+const legacyCardNumber = document.getElementById("cardNumber");
+const legacyCardTitle = document.getElementById("cardTitle");
+const legacyCardDescription = document.getElementById("cardDescription");
+
 let currentCard = null;
 
 if (cardBackImage && window.CARD_BACK_IMAGE) {
   cardBackImage.src = window.CARD_BACK_IMAGE;
 }
 
+function onClick(element, handler) {
+  if (element) {
+    element.addEventListener("click", handler);
+  }
+}
+
 function getRandomCard() {
-  const index = Math.floor(Math.random() * window.CARDS.length);
-  return window.CARDS[index];
+  const cards = window.CARDS || [];
+  const index = Math.floor(Math.random() * cards.length);
+  return cards[index];
 }
 
 function getRandomQuestion() {
-  const index = Math.floor(Math.random() * window.QUESTIONS.length);
-  return window.QUESTIONS[index];
+  const questions = window.QUESTIONS || [];
+  const index = Math.floor(Math.random() * questions.length);
+  return questions[index] || "Какой вопрос сейчас важнее всего задать себе?";
 }
 
 function renderCard(card) {
+  if (!card) return;
+
   currentCard = card;
 
-  cardImage.src = card.image;
-  cardImage.alt = card.title;
+  if (cardImage) {
+    cardImage.src = card.image;
+    cardImage.alt = card.title || "Карта";
+  }
 
-  revealBox.classList.add("hidden");
-  revealLabel.textContent = "";
-  revealText.textContent = "";
+  if (legacyCardCategory) legacyCardCategory.textContent = "";
+  if (legacyCardNumber) legacyCardNumber.textContent = "";
+  if (legacyCardTitle) legacyCardTitle.textContent = "";
+  if (legacyCardDescription) legacyCardDescription.textContent = "";
 
-  startScreen.classList.add("hidden");
-  cardScreen.classList.remove("hidden");
+  if (revealBox) revealBox.classList.add("hidden");
+  if (revealLabel) revealLabel.textContent = "";
+  if (revealText) revealText.textContent = "";
+
+  if (startScreen) startScreen.classList.add("hidden");
+  if (cardScreen) cardScreen.classList.remove("hidden");
 
   tg?.HapticFeedback?.impactOccurred?.("light");
 }
@@ -56,25 +81,27 @@ function drawCard() {
   renderCard(getRandomCard());
 }
 
-drawRandomCardButton.addEventListener("click", drawCard);
-drawRandomCardBottomButton.addEventListener("click", drawCard);
+onClick(drawRandomCardButton, drawCard);
+onClick(drawRandomCardBottomButton, drawCard);
 
-backToStartButton.addEventListener("click", () => {
-  cardScreen.classList.add("hidden");
-  startScreen.classList.remove("hidden");
+onClick(backToStartButton, () => {
+  if (cardScreen) cardScreen.classList.add("hidden");
+  if (startScreen) startScreen.classList.remove("hidden");
   tg?.HapticFeedback?.selectionChanged?.();
 });
 
-showMessageButton.addEventListener("click", () => {
-  if (!currentCard) return;
+onClick(showMessageButton, () => {
+  if (!currentCard || !revealBox || !revealLabel || !revealText) return;
 
   revealLabel.textContent = "Послание";
-  revealText.textContent = `${currentCard.title}\n\n${currentCard.message}`;
+  revealText.textContent = `${currentCard.title || "Карта"}\n\n${currentCard.message || "Послание для этой карты нужно добавить."}`;
   revealBox.classList.remove("hidden");
   tg?.HapticFeedback?.notificationOccurred?.("success");
 });
 
-showQuestionButton.addEventListener("click", () => {
+onClick(showQuestionButton, () => {
+  if (!revealBox || !revealLabel || !revealText) return;
+
   revealLabel.textContent = "Вопрос";
   revealText.textContent = getRandomQuestion();
   revealBox.classList.remove("hidden");
