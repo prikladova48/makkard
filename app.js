@@ -7,17 +7,14 @@ if (tg) {
 
 const startScreen = document.getElementById("startScreen");
 const cardScreen = document.getElementById("cardScreen");
-const drawDailyCardButton = document.getElementById("drawDailyCard");
 const drawRandomCardButton = document.getElementById("drawRandomCard");
+const drawRandomCardBottomButton = document.getElementById("drawRandomCardBottom");
 const backToStartButton = document.getElementById("backToStart");
 const showMessageButton = document.getElementById("showMessage");
 const showQuestionButton = document.getElementById("showQuestion");
 
-const cardCategory = document.getElementById("cardCategory");
+const cardBackImage = document.getElementById("cardBackImage");
 const cardImage = document.getElementById("cardImage");
-const cardNumber = document.getElementById("cardNumber");
-const cardTitle = document.getElementById("cardTitle");
-const cardDescription = document.getElementById("cardDescription");
 
 const revealBox = document.getElementById("revealBox");
 const revealLabel = document.getElementById("revealLabel");
@@ -25,35 +22,8 @@ const revealText = document.getElementById("revealText");
 
 let currentCard = null;
 
-function getTelegramUserKey() {
-  const user = tg?.initDataUnsafe?.user;
-  if (user?.id) return String(user.id);
-  return localStorage.getItem("demoUserKey") || createDemoUserKey();
-}
-
-function createDemoUserKey() {
-  const key = "demo-" + Math.random().toString(36).slice(2);
-  localStorage.setItem("demoUserKey", key);
-  return key;
-}
-
-function getTodayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function hashString(value) {
-  let hash = 0;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = (hash << 5) - hash + value.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
-}
-
-function getDailyCard() {
-  const seed = `${getTelegramUserKey()}-${getTodayKey()}`;
-  const index = hashString(seed) % window.CARDS.length;
-  return window.CARDS[index];
+if (cardBackImage && window.CARD_BACK_IMAGE) {
+  cardBackImage.src = window.CARD_BACK_IMAGE;
 }
 
 function getRandomCard() {
@@ -69,12 +39,8 @@ function getRandomQuestion() {
 function renderCard(card) {
   currentCard = card;
 
-  cardCategory.textContent = card.category;
   cardImage.src = card.image;
   cardImage.alt = card.title;
-  cardNumber.textContent = `Карта ${card.number}`;
-  cardTitle.textContent = card.title;
-  cardDescription.textContent = card.description;
 
   revealBox.classList.add("hidden");
   revealLabel.textContent = "";
@@ -86,13 +52,12 @@ function renderCard(card) {
   tg?.HapticFeedback?.impactOccurred?.("light");
 }
 
-drawDailyCardButton.addEventListener("click", () => {
-  renderCard(getDailyCard());
-});
-
-drawRandomCardButton.addEventListener("click", () => {
+function drawCard() {
   renderCard(getRandomCard());
-});
+}
+
+drawRandomCardButton.addEventListener("click", drawCard);
+drawRandomCardBottomButton.addEventListener("click", drawCard);
 
 backToStartButton.addEventListener("click", () => {
   cardScreen.classList.add("hidden");
@@ -104,7 +69,7 @@ showMessageButton.addEventListener("click", () => {
   if (!currentCard) return;
 
   revealLabel.textContent = "Послание";
-  revealText.textContent = currentCard.message;
+  revealText.textContent = `${currentCard.title}\n\n${currentCard.message}`;
   revealBox.classList.remove("hidden");
   tg?.HapticFeedback?.notificationOccurred?.("success");
 });
