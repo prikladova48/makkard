@@ -90,15 +90,26 @@ onClick(backToStartButton, () => {
   tg?.HapticFeedback?.selectionChanged?.();
 });
 
+function escapeHTML(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 onClick(showMessageButton, () => {
   if (!currentCard || !revealBox || !revealLabel || !revealText) return;
 
+  const title = escapeHTML(currentCard.title || "Карта");
+  const message = escapeHTML(currentCard.message || "Послание для этой карты нужно добавить.");
+
   revealLabel.textContent = "Послание";
-  revealText.textContent = `${currentCard.title || "Карта"}\n\n${currentCard.message || "Послание для этой карты нужно добавить."}`;
+  revealText.innerHTML = `<strong class="message-title">${title}</strong><span class="message-body">${message}</span>`;
   revealBox.classList.remove("hidden");
   tg?.HapticFeedback?.notificationOccurred?.("success");
 });
-
 onClick(showQuestionButton, () => {
   if (!revealBox || !revealLabel || !revealText) return;
 
