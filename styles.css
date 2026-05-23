@@ -236,24 +236,3 @@ button {
   background: #300f0a;
   box-shadow: none;
 }
-.card-back-button {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
-
-.card-back-button:focus,
-.card-back-button:focus-visible,
-.card-back-button:active {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.card-back-image {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
