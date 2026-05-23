@@ -30,9 +30,19 @@ const legacyCardDescription = document.getElementById("cardDescription");
 
 let currentCard = null;
 
-if (cardBackImage && window.CARD_BACK_IMAGE) {
-  cardBackImage.src = window.CARD_BACK_IMAGE;
+function preloadImages() {
+  const sources = [
+    window.CARD_BACK_IMAGE,
+    ...(window.CARDS || []).map((card) => card.image)
+  ].filter(Boolean);
+
+  sources.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
 }
+
+preloadImages();
 
 function onClick(element, handler) {
   if (element) {
