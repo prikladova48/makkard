@@ -199,7 +199,16 @@ button {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
+.message-title {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: var(--text);
+}
 
+.message-body {
+  display: block;
+}
   .actions .secondary-btn {
     margin-top: 0;
   }
