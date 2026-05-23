@@ -106,7 +106,7 @@ onClick(showMessageButton, () => {
   const message = escapeHTML(currentCard.message || "Послание для этой карты нужно добавить.");
 
   revealLabel.textContent = "Послание";
-  revealText.innerHTML = `<strong class="message-title">${title}</strong><span class="message-body">${message}</span>`;
+  revealText.innerHTML = `<strong class="message-title">${title}</strong><br><span class="message-body">${message}</span>`;
   revealBox.classList.remove("hidden");
   tg?.HapticFeedback?.notificationOccurred?.("success");
 });
